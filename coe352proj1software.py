@@ -7,7 +7,22 @@ from scipy.linalg import svd
 #Singular-value decomposition
 def my_svd(matrix, threshold=1e-10):
     """
-    Doc string
+    Perform Singular Value Decomposition (SVD) on the input matrix.
+    Args:
+        matrix (numpy.ndarray): The input matrix to be decomposed.
+        threshold (float, optional): A threshold value to determine if singular values are close to zero.
+            Singular values smaller than this threshold will be considered as zero.
+            Default is 1e-10.
+    Returns:
+        dict: A dictionary containing the following components:
+            - "U" (numpy.ndarray): The left singular vectors of the input matrix.
+            - "S" (numpy.ndarray): A diagonal matrix containing the singular values.
+            - "V" (numpy.ndarray): The right singular vectors of the input matrix (transpose of VT).
+            - "Condition Number" (float): The condition number of the matrix based on singular values.
+            - "Matrix Inverse" (numpy.ndarray): The matrix inverse computed using the SVD decomposition.
+    Raises:
+        ValueError: If the input matrix is singular (contains zero or near-zero singular values).
+        np.linalg.linalg.LinAlgError: If a linear algebra error occurs during computation.
     """
     try:
         #Calculate the eigenvalues and eigenvectors of A.T A
@@ -61,6 +76,18 @@ boundCond = input("Enter boundary condition (one or two fixed ends): ")
 
 # Step 2: Assemble Stiffness Matrix (K) and Load Vector (F)
 def assemble_stiffness_matrix_and_load_vector(n, k, m, boundCond):
+    """
+    Assemble the stiffness matrix and load vector for a one-dimensional structural problem.
+    Args:
+        n (int): The number of nodes or elements in the structural system.
+        k (numpy.ndarray): An array of stiffness values for each element or node.
+        m (numpy.ndarray): An array of mass values for each element or node.
+        boundCond (str): Specifies the boundary conditions of the problem.
+            - "one fixed end": One end of the system is fixed (zero displacement).
+            - "two fixed ends": Both ends of the system are fixed.
+    Returns:
+        tuple: A tuple containing the stiffness matrix (K) and the load vector (F).
+    """
     K = np.zeros((n, n)) #these lines initalize the stiffness matrix 'K' and load vector 'F'. The dimensions of these arrays are determined by the number of nodes 'n'
     F = np.zeros((n, 1))
 
