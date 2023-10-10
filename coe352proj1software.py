@@ -5,14 +5,18 @@ import scipy.linalg as la
 from scipy.linalg import svd
 
 #Singular-value decomposition
-def my_svd(matrix):
+def my_svd(matrix, threshold=1e-10):
+    """
+    Doc string
+    """
     try:
-        #Calculate SVD, for test
-        #U, S, V = np.linalg.svd(matrix, full_matrices=False)
-
         #Calculate the eigenvalues and eigenvectors of A.T A
         AtA = matrix.T @ matrix
         eigvals, eigvecs = np.linalg.eig(AtA)
+
+        # Check for singular matrix
+        if any(np.isclose(eigvals, 0.0, atol=threshold)):
+            return ValueError("Matrix is singular! It does not have an inverse.")
 
         #Sort the eigenvalues and eigenvectors in descending order
         sortedIndices = np.argsort(eigvals)[::-1]
@@ -29,17 +33,15 @@ def my_svd(matrix):
         #Calculate matrix condition number
         condNum = singularVals[0] / singularVals[-1]
 
-        #Calculate the matix inverse using eigenvalue/eigenvector method
-        ##eigvals, eigvecs = np.linalg.eig(matrix.T @ matrix) (used for a test)
-        if any(np.isclose(singularVals, 0.0)):
-            return ValueError("Matrix is singular! It does not have an inverse.")
-        
+        # Apply threshold to singular values
+        singularVals[singularVals < threshold] = 0.0
+
         # Adjust the signs of V to ensure consistency with singular values
-        same_sign = np.sign((matrix @ V)[0] * (U @ np.diag(singularVals))[0])
-        V = V * same_sign.reshape(1, -1)
-        
+        same_sign = np.sign((matrix @ V[:, :len(singularVals)]) @ singularVals)
+        V[:, :len(singularVals)] = V[:, :len(singularVals)] * same_sign
+
         #Calculate the matrix inverse using the SVD decomp
-        matrix_inverse = V @ np.diag(1.0/singularVals) @ U.T
+        matrix_inverse = V[:, :len(singularVals)] @ np.diag(1.0 / singularVals) @ U.T
 
         return {
             "U": U,
