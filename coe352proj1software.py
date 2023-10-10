@@ -5,7 +5,7 @@ import scipy.linalg as la
 from scipy.linalg import svd
 
 #Singular-value decomposition
-def my_svd(matrix, threshold=1e-10):
+def my_svd(matrix, threshold=1e-10) -> dict:
     """
     Perform Singular Value Decomposition (SVD) on the input matrix.
     Args:
@@ -75,7 +75,7 @@ m = np.array([float(input(f"Enter mass for mass {i}: ")) for i in range(n)])
 boundCond = input("Enter boundary condition (one or two fixed ends): ")
 
 # Step 2: Assemble Stiffness Matrix (K) and Load Vector (F)
-def assemble_stiffness_matrix_and_load_vector(n, k, m, boundCond):
+def assemble_stiffness_matrix_and_load_vector(n, k, m, boundCond) -> tuple:
     """
     Assemble the stiffness matrix and load vector for a one-dimensional structural problem.
     Args:
