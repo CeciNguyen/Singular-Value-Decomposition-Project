@@ -39,8 +39,8 @@ def my_svd(matrix, threshold=1e-10):
         # Apply threshold to singular values
         singularVals[singularVals < threshold] = 0.0
 
-        #Calculate the matix inverse using eigenvalue/eigenvector method
-        ##eigvals, eigvecs = np.linalg.eig(matrix.T @ matrix) (used for a test)
+        #Calculate the matix inverse using eigenvalue/eigenvector method (used for a test)
+        ##eigvals, eigvecs = np.linalg.eig(matrix.T @ matrix) 
         #if any(np.isclose(singularVals, 0.0)):
             #return ValueError("Matrix is singular! It does not have an inverse.")
         
@@ -106,4 +106,39 @@ if __name__ == "__main__":
 #[[-7.07106781e-01 -6.52713952e-01 -2.71964147e-01]
 # [ 9.89578804e-17  3.84615385e-01 -9.23076923e-01]
 # [-7.07106781e-01  6.52713952e-01  2.71964147e-01]]
+
+#--------------------------------------------------------------------------
+
+###Results of testing SampMatrix = np.array([[3,2,3],[2,3,-2],[1,2,2]])
+#Mysvd function
+#U:
+#[[ 0.77582299  0.35445889  0.52197471] 
+# [ 0.40578388 -0.91380317  0.0174131 ] 
+# [ 0.48315437  0.19829944 -0.8527832 ]]
+#S:
+#[[5.76490657 0.         0.        ]    
+# [0.         3.71545651 0.        ]    
+# [0.         0.         0.98042605]]   
+#V:
+#[[ 0.62831739  0.64793875  0.43057245] 
+# [-0.15231782 -0.44029391  0.88483928] 
+# [ 0.76290008 -0.62154377 -0.1779517 ]]
+#Condition Number:
+#5.880001445949984
+#Matrix Inverse:
+#[[ 0.47619048  0.0952381  -0.61904762]
+# [-0.28571429  0.14285714  0.57142857]
+# [ 0.04761905 -0.19047619  0.23809524]]
+
+#Builtin svd function
+#Matrix U:
+#[[-0.77582299  0.35445889 -0.52197471]
+# [-0.40578388 -0.91380317 -0.0174131 ]
+# [-0.48315437  0.19829944  0.8527832 ]]
+#Matrix S:
+#[5.76490657 3.71545651 0.98042605]
+#Matrix VT:
+#[[-0.62831739 -0.64793875 -0.43057245]
+# [-0.15231782 -0.44029391  0.88483928]
+# [-0.76290008  0.62154377  0.1779517 ]]
 
