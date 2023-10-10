@@ -61,30 +61,30 @@ boundCond = input("Enter boundary condition (one or two fixed ends): ")
 
 # Step 2: Assemble Stiffness Matrix (K) and Load Vector (F)
 def assemble_stiffness_matrix_and_load_vector(n, k, m, boundCond):
-    K = np.zeros((n, n))
+    K = np.zeros((n, n)) #these lines initalize the stiffness matrix 'K' and load vector 'F'. The dimensions of these arrays are determined by the number of nodes 'n'
     F = np.zeros((n, 1))
 
-    for i in range(n):
-        K[i, i] = k[i]
-        if i > 0:
-            K[i, i - 1] = -k[i - 1]
+    for i in range(n): #This loop iterates over all nodes or elements in the finite element model, where n is the total number of nodes.
+        K[i, i] = k[i] #This line assigns the stiffness value k[i] to the diagonal element of the stiffness matrix K at position (i, i). Each element of the diagonal corresponds to the stiffness of the individual elements or nodes.
+        if i > 0: #This condition checks whether the current node is not the first node (i.e., it's not the leftmost end of the structure). It ensures that the following lines are only executed for nodes other than the first one.
+            K[i, i - 1] = -k[i - 1] #These lines set the off-diagonal elements of the stiffness matrix K. They represent the negative stiffness values connecting adjacent nodes. 
             K[i - 1, i] = -k[i - 1]
-        F[i, 0] = m[i] * 9.81  # Assuming gravitational acceleration is 9.81 m/s^2
+        F[i, 0] = m[i] * 9.81  # Assuming gravitational acceleration is 9.81 m/s^2. This line calculates the force component in the load vector F at position (i, 0) based on the mass m[i] and gravitational acceleration (9.81 m/s²)
 
         # Modify K and F based on boundary conditions
         if boundCond == "one fixed end":
-            K[0, :] = 0
+            K[0, :] = 0 #These lines set all the elements in the first row and first column of the stiffness matrix K to zero. This effectively fixes the displacement (prevents movement) at the first node or end of the structure.
             K[:, 0] = 0
-            K[0, 0] = 1
-            F[0] = 0
+            K[0, 0] = 1 #This line sets the top-left element of the stiffness matrix K to 1. This is often used to represent a fixed support, where there is no translation or rotation at the first node.
+            F[0] = 0    #This line sets the force at the first node (usually associated with the fixed end) to zero. Since the structure is fixed at this end, there is no external force applied to it.
         elif boundCond == "two fixed ends":
-            K[0, :] = 0
+            K[0, :] = 0 #These lines, as in the previous case, set all the elements in the first row and first column of the stiffness matrix K to zero.
             K[:, 0] = 0
-            K[0, 0] = 1
-            K[-1, :] = 0
+            K[0, 0] = 1 #This line set the top-left and bottom-right elements of the stiffness matrix K to 1. This represents fixed supports at both ends of the structure.
+            K[-1, :] = 0 #These lines set all the elements in the last row and last column of the stiffness matrix K to zero.
             K[:, -1] = 0
-            K[-1, -1] = 1
-            F[0] = 0
+            K[-1, -1] = 1 #This line set the top-left and bottom-right elements of the stiffness matrix K to 1. This represents fixed supports at both ends of the structure.
+            F[0] = 0    #These lines set the forces at both the first and last nodes to zero. Since the structure is fixed at both ends, there are no external forces applied to it at either end.
             F[-1] = 0
     return K, F
 
