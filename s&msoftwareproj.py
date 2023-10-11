@@ -110,22 +110,22 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
             K[i + 1, i] = -spring_constants[i + 1]
             
             
-            # Calculate the condition number of K using SVD
-            svd_result = my_svd(K)
-            if svd_result is None:
-                raise ValueError("Matrix is singular! It does not have an inverse.")
+        # Calculate the condition number of K using SVD
+        svd_result = my_svd(K)
+        if svd_result is None:
+            raise ValueError("Matrix is singular! It does not have an inverse.")
             
-            # Extract the condition number from the svd_result
-            l2_condition_number = svd_result["Condition Number"]
+        # Extract the condition number from the svd_result
+        l2_condition_number = svd_result["Condition Number"]
 
-            # Calculate internal stresses and equilibrium displacements
-            F = masses * 9.81
-            u = svd_result["Matrix Inverse"] @ F
+        # Calculate internal stresses and equilibrium displacements
+        F = masses * 9.81
+        u = svd_result["Matrix Inverse"] @ F
             
-            # Calculate elongations
-            elongations = np.zeros(num_springs)
-            for i in range(num_springs):
-                elongations[i] = (u[i + 1] - u[i]) * spring_constants[i]
+        # Calculate elongations
+        elongations = np.zeros(num_springs)
+        for i in range(num_springs):
+            elongations[i] = (u[i + 1] - u[i]) * spring_constants[i]
     
     except Exception as e:
         # Handle any exceptions and provide helpful error messages
