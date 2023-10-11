@@ -69,6 +69,24 @@ def my_svd(matrix, threshold=1e-15) -> dict:
         raise ValueError("Matrix is singular! It does not have an inverse.")
     
 def calculate_system(num_springs, spring_constants, masses, boundary_conditions):
+    """
+    Calculate the equilibrium displacements, internal stresses, elongations, and L2 condition number
+    of a mechanical system composed of springs, masses, and specified boundary conditions.
+    Args:
+        num_springs (int): The number of springs in the system.
+        spring_constants (list of float): A list of spring constants for each spring.
+        masses (list of float): A list of masses for the masses between springs.
+        boundary_conditions (str): The boundary conditions of the system, which can be one of:
+            - 'one_fixed_one_free': One end fixed, one end free.
+            - 'two_fixed': Both ends fixed.
+            - 'two_free': Both ends free.
+    Returns:
+        tuple: A tuple containing the following components:
+            - u (numpy.ndarray): An array of equilibrium displacements for each node.
+            - F (numpy.ndarray): An array of internal stresses at each node.
+            - elongations (numpy.ndarray): An array of elongations for each spring.
+            - l2_condition_number (float): The L2 condition number of the stiffness matrix.
+    """
     try:
         # Initialize system parameters
         num_nodes = num_springs + 1
@@ -94,7 +112,6 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
             
             # Calculate the condition number of K using SVD
             svd_result = my_svd(K)
-
             if svd_result is None:
                 raise ValueError("Matrix is singular! It does not have an inverse.")
             
@@ -102,7 +119,8 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
             l2_condition_number = svd_result["Condition Number"]
 
             # Calculate internal stresses and equilibrium displacements
-            F = np.dot(K, u)
+            F = masses * 9.81
+            u = svd_result["Matrix Inverse"] @ F
             
             # Calculate elongations
             elongations = np.zeros(num_springs)
@@ -120,6 +138,7 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
 num_springs = int(input("Enter the number of springs: "))
 boundary_conditions = input("Enter boundary conditions (one_fixed_one_free, two_fixed, or two_free): ")
 spring_constants = [float(input(f"Enter spring constant for spring {i}: ")) for i in range(num_springs)]
+masses = []
 if boundary_conditions == "one_fixed_one_free":
     masses = [float(input(f"Enter mass for mass {i}: ")) for i in range(num_springs)]
 elif boundary_conditions == "two_fixed":
