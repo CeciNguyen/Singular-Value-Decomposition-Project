@@ -118,9 +118,15 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
 
 # User input
 num_springs = int(input("Enter the number of springs: "))
-spring_constants = [float(input(f"Enter spring constant for spring {i}: ")) for i in range(num_springs)]
-masses = [float(input(f"Enter mass for mass {i+1}: ")) for i in range(num_springs-1)]
 boundary_conditions = input("Enter boundary conditions (one_fixed_one_free, two_fixed, or two_free): ")
+spring_constants = [float(input(f"Enter spring constant for spring {i}: ")) for i in range(num_springs)]
+if boundary_conditions == "one_fixed_one_free":
+    masses = [float(input(f"Enter mass for mass {i}: ")) for i in range(num_springs)]
+elif boundary_conditions == "two_fixed":
+    masses = [float(input(f"Enter mass for mass {i}: ")) for i in range(num_springs-1)]
+elif boundary_conditions == "two_free":
+    masses = [float(input(f"Enter mass for mass {i}: ")) for i in range(num_springs+1)]
+
 
 u, F, elongations, l2_condition_number = calculate_system(num_springs, spring_constants, masses, boundary_conditions)
 
