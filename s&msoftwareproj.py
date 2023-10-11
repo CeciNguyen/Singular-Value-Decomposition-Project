@@ -102,13 +102,18 @@ def calculate_system(num_springs, spring_constants, masses, boundary_conditions)
             u[-1] = 0  # Fixed end
         elif boundary_conditions == 'two_free':
             pass  # Both ends are free
+
+        #Calculate the matrix A
+        A = np.zeros((num_springs, num_nodes))
+        for i in range(num_springs):
+            A[i, i] = -1 
+            A[i, i + 1] = 1
         
-        # Construct the stiffness matrix K and the force vector F
-        for i in range(num_springs-1):
-            K[i, i] += spring_constants[i] + spring_constants[i + 1]
-            K[i, i + 1] = -spring_constants[i + 1]
-            K[i + 1, i] = -spring_constants[i + 1]
-            
+        # Construct the matrix C
+        C = np.diag(spring_constants)  # Assuming diagonal stiffness matrix
+        
+        # Calculate the stiffness matrix K using K = A^TIA
+        K = A.T @ C @ A    
             
         # Calculate the condition number of K using SVD
         svd_result = my_svd(K)
